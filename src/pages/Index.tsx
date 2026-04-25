@@ -1,6 +1,6 @@
 import heroImg from "@/assets/hero-glasses.jpg";
 import avatarsImg from "@/assets/avatars.jpg";
-import { Play, Eye, ShieldCheck, Sparkles } from "lucide-react";
+import { Play, Eye, Sparkles } from "lucide-react";
 
 const navItems = ["Features", "How It Works", "About us", "Packages"];
 
