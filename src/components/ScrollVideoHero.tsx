@@ -1,5 +1,6 @@
-import { useEffect, useMemo, useRef } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { motion, useScroll, useTransform } from "framer-motion";
+import heroImg from "@/assets/visoread-hero-bg.png";
 
 const sections = [
   {
@@ -26,11 +27,16 @@ const ScrollVideoHero = () => {
   const targetTimeRef = useRef(0);
   const rafRef = useRef<number | null>(null);
   const durationRef = useRef(0);
+  const [videoReady, setVideoReady] = useState(false);
 
   const { scrollYProgress } = useScroll({
     target: targetRef,
     offset: ["start start", "end end"],
   });
+
+  // Image fades out as we enter, video fades in over the same window.
+  const imageOpacity = useTransform(scrollYProgress, [0, 0.08, 0.18], [1, 1, 0]);
+  const videoOpacity = useTransform(scrollYProgress, [0, 0.08, 0.18], [0, 0.4, 1]);
 
   const sectionRanges = useMemo<Array<[number, number, number, number]>>(
     () => [
@@ -61,34 +67,53 @@ const ScrollVideoHero = () => {
 
     const lerpFactor = 0.12;
 
-    const syncTargetTime = () => {
-      if (!durationRef.current) return;
-      targetTimeRef.current = scrollYProgress.get() * durationRef.current;
-    };
-
-    const handleLoadedMetadata = () => {
-      durationRef.current = video.duration || 0;
-      currentTimeRef.current = 0;
-      syncTargetTime();
+    const markReady = () => {
+      if (!video.duration || isNaN(video.duration)) return;
+      durationRef.current = video.duration;
+      // Initialize to current scroll position so first paint matches scroll.
+      const p = scrollYProgress.get();
+      targetTimeRef.current = p * durationRef.current;
+      currentTimeRef.current = targetTimeRef.current;
+      try {
+        video.currentTime = currentTimeRef.current;
+      } catch {
+        /* ignore */
+      }
       video.pause();
+      setVideoReady(true);
     };
 
     video.muted = true;
     video.playsInline = true;
     video.preload = "auto";
-    video.load();
 
-    if (video.readyState >= 1) handleLoadedMetadata();
-    video.addEventListener("loadedmetadata", handleLoadedMetadata);
+    // Try to kick off loading immediately.
+    try {
+      video.load();
+    } catch {
+      /* ignore */
+    }
+
+    if (video.readyState >= 2 && video.duration) {
+      markReady();
+    }
+
+    const onLoadedMeta = () => markReady();
+    const onLoadedData = () => markReady();
+    const onCanPlay = () => markReady();
+
+    video.addEventListener("loadedmetadata", onLoadedMeta);
+    video.addEventListener("loadeddata", onLoadedData);
+    video.addEventListener("canplay", onCanPlay);
 
     const tick = () => {
-      const diff = targetTimeRef.current - currentTimeRef.current;
-      currentTimeRef.current += diff * lerpFactor;
       if (durationRef.current) {
+        const diff = targetTimeRef.current - currentTimeRef.current;
+        currentTimeRef.current += diff * lerpFactor;
         try {
           video.currentTime = Math.min(
             Math.max(currentTimeRef.current, 0),
-            durationRef.current - 0.001,
+            durationRef.current - 0.05,
           );
         } catch {
           /* ignore seek errors */
@@ -107,7 +132,9 @@ const ScrollVideoHero = () => {
 
     return () => {
       unsubscribe();
-      video.removeEventListener("loadedmetadata", handleLoadedMetadata);
+      video.removeEventListener("loadedmetadata", onLoadedMeta);
+      video.removeEventListener("loadeddata", onLoadedData);
+      video.removeEventListener("canplay", onCanPlay);
       if (rafRef.current) cancelAnimationFrame(rafRef.current);
     };
   }, [scrollYProgress]);
@@ -117,17 +144,28 @@ const ScrollVideoHero = () => {
   return (
     <section ref={targetRef} className="relative h-[300vh] w-full">
       <div className="sticky top-0 h-screen w-full overflow-hidden">
-        {/* Fixed background video */}
-        <video
+        {/* Hero image — visible at the very top of this section, fades out as video takes over */}
+        <motion.img
+          src={heroImg}
+          alt=""
+          aria-hidden="true"
+          style={{ opacity: imageOpacity }}
+          className="absolute inset-0 h-full w-full object-cover object-center"
+        />
+
+        {/* Background video — fades in over the image */}
+        <motion.video
           ref={videoRef}
           src="/visoread-hero.mp4"
           muted
           playsInline
           preload="auto"
-          className="fixed inset-0 h-screen w-screen object-cover"
+          style={{ opacity: videoReady ? videoOpacity : 0 }}
+          className="absolute inset-0 h-full w-full object-cover"
         />
+
         {/* Dark overlay */}
-        <div className="fixed inset-0 bg-background/50" />
+        <div className="absolute inset-0 bg-background/50" />
 
         {/* Text sections layered on top */}
         <div className="relative z-10 flex h-screen items-center px-4 sm:px-8">
@@ -135,13 +173,7 @@ const ScrollVideoHero = () => {
             {sections.map((s, i) => (
               <motion.div
                 key={s.title}
-                style={{
-                  opacity: opacities[i],
-                  y: ys[i],
-                  filter: blurs[i].get
-                    ? undefined
-                    : undefined,
-                }}
+                style={{ opacity: opacities[i], y: ys[i] }}
                 className="absolute inset-0 flex items-center px-4 sm:px-8"
               >
                 <motion.div
