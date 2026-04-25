@@ -68,9 +68,11 @@ const ScrollVideoHero = ({ children }: PropsWithChildren) => {
 
   const syncTargetTime = useCallback(() => {
     if (!durationRef.current) return;
+    const usableStart = durationRef.current * 0.08;
+    const usableEnd = Math.max(durationRef.current - 0.05, usableStart);
     targetTimeRef.current = Math.min(
-      Math.max(scrollYProgress.get() * durationRef.current, 0),
-      durationRef.current - 0.05,
+      Math.max(usableStart + scrollYProgress.get() * (usableEnd - usableStart), usableStart),
+      usableEnd,
     );
   }, [scrollYProgress]);
 
@@ -120,12 +122,14 @@ const ScrollVideoHero = ({ children }: PropsWithChildren) => {
 
     const tick = () => {
       if (durationRef.current) {
+        const usableStart = durationRef.current * 0.08;
+        const usableEnd = Math.max(durationRef.current - 0.05, usableStart);
         const diff = targetTimeRef.current - currentTimeRef.current;
         currentTimeRef.current += diff * lerpFactor;
         try {
           video.currentTime = Math.min(
-            Math.max(currentTimeRef.current, 0),
-            durationRef.current - 0.05,
+            Math.max(currentTimeRef.current, usableStart),
+            usableEnd,
           );
         } catch {
           /* ignore seek errors */
@@ -136,9 +140,11 @@ const ScrollVideoHero = ({ children }: PropsWithChildren) => {
 
     const unsubscribe = scrollYProgress.on("change", (p) => {
       if (durationRef.current) {
+        const usableStart = durationRef.current * 0.08;
+        const usableEnd = Math.max(durationRef.current - 0.05, usableStart);
         targetTimeRef.current = Math.min(
-          Math.max(p * durationRef.current, 0),
-          durationRef.current - 0.05,
+          Math.max(usableStart + p * (usableEnd - usableStart), usableStart),
+          usableEnd,
         );
       }
     });
