@@ -127,10 +127,8 @@ const ScrollVideoHero = ({ children, introVh = 400 }: ScrollVideoHeroProps) => {
 
   return (
     <section ref={targetRef} className="relative w-full">
-      {/* Spacer that gives the intro extra scroll length before children start */}
-      <div aria-hidden style={{ height: `${introVh}vh` }} />
+      {/* Sticky stage holds the fixed video + overlaid intro text */}
       <div className="sticky top-0 h-screen w-full overflow-hidden">
-        {/* Background video — absolute inside the sticky stage so it stays put while we scroll */}
         <video
           ref={videoRef}
           src="/visoread-hero.mp4"
@@ -141,13 +139,11 @@ const ScrollVideoHero = ({ children, introVh = 400 }: ScrollVideoHeroProps) => {
           loop={false}
           className="absolute inset-0 h-full w-full object-cover"
         />
-        {/* Dark overlay */}
         <motion.div
           style={{ opacity: overlayOpacity }}
           className="absolute inset-0 bg-background"
         />
 
-        {/* Intro text sections layered on top */}
         <div className="pointer-events-none absolute inset-0 z-10 flex items-center px-4 sm:px-8">
           <div className="mx-auto w-full max-w-7xl">
             {introSections.map((s, i) => (
@@ -173,7 +169,6 @@ const ScrollVideoHero = ({ children, introVh = 400 }: ScrollVideoHeroProps) => {
           </div>
         </div>
 
-        {/* Scroll indicator */}
         <motion.div
           style={{ opacity: indicatorOpacity }}
           className="pointer-events-none absolute bottom-10 left-1/2 z-20 -translate-x-1/2"
@@ -193,16 +188,14 @@ const ScrollVideoHero = ({ children, introVh = 400 }: ScrollVideoHeroProps) => {
         </motion.div>
       </div>
 
-      {/* Children render on top of the sticky stage. They occupy the remaining scroll height
-          inside this section, so the parent's scroll progress (which drives the video)
-          continues advancing as the user scrolls through them. */}
-      {children ? (
-        <div className="absolute inset-x-0 top-0 z-20" style={{ paddingTop: "100vh" }}>
-          {children}
-        </div>
-      ) : null}
+      {/* Spacer for the intro text scroll length (intro plays before children appear) */}
+      <div aria-hidden style={{ height: `${introVh}vh` }} className="-mt-[100vh]" />
+
+      {/* Children scroll over the still-sticky video */}
+      {children ? <div className="relative z-20">{children}</div> : null}
     </section>
   );
 };
 
 export default ScrollVideoHero;
+
