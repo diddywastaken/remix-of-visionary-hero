@@ -19,7 +19,6 @@ import ScrollVideoHero from "@/components/ScrollVideoHero";
 const navItems = [
   { label: "Features", href: "#features" },
   { label: "How It Works", href: "#how" },
-  { label: "Our Motive", href: "#motive" },
   { label: "Contact", href: "#contact" },
 ];
 
