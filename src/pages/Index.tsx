@@ -1,4 +1,4 @@
-import heroImg from "@/assets/hero-glasses.jpg";
+import heroImg from "@/assets/visoread-hero-bg.png";
 import {
   Mic,
   ScanText,
@@ -20,7 +20,6 @@ import ScrollVideoHero from "@/components/ScrollVideoHero";
 const navItems = [
   { label: "Features", href: "#features" },
   { label: "How It Works", href: "#how" },
-  { label: "Our Motive", href: "#motive" },
   { label: "Contact", href: "#contact" },
 ];
 
@@ -94,6 +93,32 @@ const Index = () => {
 
   return (
     <main className="min-h-screen bg-background text-foreground">
+      <header className="fixed left-0 right-0 top-0 z-50 px-4 pt-5 sm:px-8 sm:pt-7">
+        <nav className="mx-auto flex max-w-7xl items-center justify-between rounded-full border border-white/10 bg-background/45 px-4 py-2 shadow-[0_24px_80px_-36px_hsl(var(--foreground)/0.35)] backdrop-blur-xl sm:px-6 sm:py-3">
+          <a href="#" className="text-base font-semibold tracking-[0.2em]">
+            VISOREAD
+          </a>
+          <ul className="hidden items-center gap-8 md:flex">
+            {navItems.map((item) => (
+              <li key={item.label}>
+                <a
+                  href={item.href}
+                  className="text-sm text-foreground/80 transition-colors hover:text-foreground"
+                >
+                  {item.label}
+                </a>
+              </li>
+            ))}
+          </ul>
+          <a
+            href="#contact"
+            className="rounded-full bg-foreground px-5 py-2.5 text-xs font-semibold tracking-wide text-background transition-transform hover:scale-[1.02] sm:text-sm"
+          >
+            PARTNER WITH US
+          </a>
+        </nav>
+      </header>
+
       {/* ================= HERO ================= */}
       <section className="relative min-h-screen overflow-hidden">
         <img
@@ -107,33 +132,6 @@ const Index = () => {
         <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-transparent to-black/40" />
 
         <div className="relative z-10 flex min-h-screen flex-col">
-          {/* Nav */}
-          <header className="px-4 pt-5 sm:px-8 sm:pt-7">
-            <nav className="mx-auto flex max-w-7xl items-center justify-between rounded-full border border-white/10 bg-white/5 px-4 py-2 backdrop-blur-xl sm:px-6 sm:py-3">
-              <a href="#" className="text-base font-semibold tracking-[0.2em]">
-                VISOREAD
-              </a>
-              <ul className="hidden items-center gap-8 md:flex">
-                {navItems.map((item) => (
-                  <li key={item.label}>
-                    <a
-                      href={item.href}
-                      className="text-sm text-foreground/80 transition-colors hover:text-foreground"
-                    >
-                      {item.label}
-                    </a>
-                  </li>
-                ))}
-              </ul>
-              <a
-                href="#contact"
-                className="rounded-full bg-foreground px-5 py-2.5 text-xs font-semibold tracking-wide text-background transition-transform hover:scale-[1.02] sm:text-sm"
-              >
-                PARTNER WITH US
-              </a>
-            </nav>
-          </header>
-
           {/* Bottom content */}
           <section className="mt-auto px-4 pb-14 sm:px-8 sm:pb-20">
             <div className="mx-auto max-w-7xl">
