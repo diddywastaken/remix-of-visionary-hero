@@ -237,7 +237,7 @@ const Index = () => {
                       {body}
                     </p>
                   </div>
-                  <div className="text-7xl font-bold tracking-tighter text-foreground/15 sm:text-8xl">
+                  <div className="hidden text-7xl font-bold tracking-tighter text-foreground/15 sm:text-8xl lg:block">
                     {String(i + 1).padStart(2, "0")}
                   </div>
                 </div>
@@ -279,46 +279,6 @@ const Index = () => {
                 </p>
               </div>
             ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ================= MOTIVE ================= */}
-      <section id="motive" className="relative px-4 py-24 sm:px-8 sm:py-32">
-        <div className="reveal mx-auto max-w-5xl rounded-3xl border border-white/10 bg-gradient-to-br from-white/[0.06] via-white/[0.02] to-[hsl(var(--brand))]/[0.10] p-8 backdrop-blur-md sm:p-14">
-          <span className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs font-medium text-foreground/80">
-            Our Motive
-          </span>
-          <h2 className="mt-6 text-4xl font-bold leading-[1.05] tracking-tight sm:text-5xl md:text-6xl">
-            Affordable.
-            <br />
-            For everyone.
-          </h2>
-          <div className="mt-10 grid grid-cols-1 gap-6 sm:grid-cols-3">
-            <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-6">
-              <div className="text-3xl font-bold text-[hsl(var(--brand))]">
-                1/10th
-              </div>
-              <p className="mt-2 text-sm text-foreground/70">
-                the cost of existing assistive smart glasses.
-              </p>
-            </div>
-            <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-6">
-              <div className="text-3xl font-bold text-[hsl(var(--brand))]">
-                100%
-              </div>
-              <p className="mt-2 text-sm text-foreground/70">
-                voice-controlled — no screen, no learning curve.
-              </p>
-            </div>
-            <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-6">
-              <div className="text-3xl font-bold text-[hsl(var(--brand))]">
-                Every home
-              </div>
-              <p className="mt-2 text-sm text-foreground/70">
-                independence shouldn't be a luxury good.
-              </p>
-            </div>
           </div>
         </div>
       </section>
