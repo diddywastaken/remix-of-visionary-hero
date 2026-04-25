@@ -189,6 +189,7 @@ const Index = () => {
           </div>
         </section>
       ))}
+      </ScrollVideoHero>
 
       {/* ================= HOW IT WORKS ================= */}
       <section id="how" className="relative px-4 py-24 sm:px-8 sm:py-32">
