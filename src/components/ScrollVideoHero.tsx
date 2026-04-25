@@ -22,6 +22,7 @@ const sections = [
 
 const ScrollVideoHero = ({ children }: PropsWithChildren) => {
   const targetRef = useRef<HTMLDivElement>(null);
+  const storyRef = useRef<HTMLDivElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
   const currentTimeRef = useRef(0);
   const targetTimeRef = useRef(0);
@@ -34,9 +35,14 @@ const ScrollVideoHero = ({ children }: PropsWithChildren) => {
     offset: ["start start", "end end"],
   });
 
+  const { scrollYProgress: storyProgress } = useScroll({
+    target: storyRef,
+    offset: ["start start", "end start"],
+  });
+
   // Transition starts immediately after the first scroll into this stage.
-  const imageOpacity = useTransform(scrollYProgress, [0, 0.03, 0.12], [1, 0.65, 0]);
-  const videoOpacity = useTransform(scrollYProgress, [0, 0.03, 0.12], [0, 0.6, 1]);
+  const imageOpacity = useTransform(storyProgress, [0, 0.03, 0.12], [1, 0.65, 0]);
+  const videoOpacity = useTransform(storyProgress, [0, 0.03, 0.12], [0, 0.6, 1]);
 
   const sectionRanges = useMemo<Array<[number, number, number, number]>>(
     () => [
@@ -47,15 +53,15 @@ const ScrollVideoHero = ({ children }: PropsWithChildren) => {
     [],
   );
 
-  const firstOpacity = useTransform(scrollYProgress, sectionRanges[0], [0, 1, 1, 0]);
-  const secondOpacity = useTransform(scrollYProgress, sectionRanges[1], [0, 1, 1, 0]);
-  const thirdOpacity = useTransform(scrollYProgress, sectionRanges[2], [0, 1, 1, 0]);
-  const firstY = useTransform(scrollYProgress, sectionRanges[0], [40, 0, 0, -40]);
-  const secondY = useTransform(scrollYProgress, sectionRanges[1], [40, 0, 0, -40]);
-  const thirdY = useTransform(scrollYProgress, sectionRanges[2], [40, 0, 0, -40]);
-  const firstBlur = useTransform(scrollYProgress, sectionRanges[0], ["8px", "0px", "0px", "8px"]);
-  const secondBlur = useTransform(scrollYProgress, sectionRanges[1], ["8px", "0px", "0px", "8px"]);
-  const thirdBlur = useTransform(scrollYProgress, sectionRanges[2], ["8px", "0px", "0px", "8px"]);
+  const firstOpacity = useTransform(storyProgress, sectionRanges[0], [0, 1, 1, 0]);
+  const secondOpacity = useTransform(storyProgress, sectionRanges[1], [0, 1, 1, 0]);
+  const thirdOpacity = useTransform(storyProgress, sectionRanges[2], [0, 1, 1, 0]);
+  const firstY = useTransform(storyProgress, sectionRanges[0], [40, 0, 0, -40]);
+  const secondY = useTransform(storyProgress, sectionRanges[1], [40, 0, 0, -40]);
+  const thirdY = useTransform(storyProgress, sectionRanges[2], [40, 0, 0, -40]);
+  const firstBlur = useTransform(storyProgress, sectionRanges[0], ["8px", "0px", "0px", "8px"]);
+  const secondBlur = useTransform(storyProgress, sectionRanges[1], ["8px", "0px", "0px", "8px"]);
+  const thirdBlur = useTransform(storyProgress, sectionRanges[2], ["8px", "0px", "0px", "8px"]);
   const opacities = [firstOpacity, secondOpacity, thirdOpacity];
   const ys = [firstY, secondY, thirdY];
   const blurs = [firstBlur, secondBlur, thirdBlur];
@@ -148,7 +154,7 @@ const ScrollVideoHero = ({ children }: PropsWithChildren) => {
     };
   }, [scrollYProgress, syncTargetTime]);
 
-  const indicatorOpacity = useTransform(scrollYProgress, [0, 0.05], [1, 0]);
+  const indicatorOpacity = useTransform(storyProgress, [0, 0.05], [1, 0]);
 
   return (
     <section ref={targetRef} className="relative w-full">
@@ -226,8 +232,8 @@ const ScrollVideoHero = ({ children }: PropsWithChildren) => {
         </motion.div>
       </div>
 
-      <div className="relative z-10 -mt-screen">
-        <div className="h-[300vh]" />
+      <div className="relative z-10 -mt-[100vh]">
+        <div ref={storyRef} className="h-[300vh]" />
         {children}
       </div>
     </section>
