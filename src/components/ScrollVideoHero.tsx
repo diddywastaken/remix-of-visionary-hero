@@ -25,7 +25,7 @@ const introSections = [
   },
 ];
 
-const ScrollVideoHero = ({ children, scrollVh = 600 }: ScrollVideoHeroProps) => {
+const ScrollVideoHero = ({ children, introVh = 400 }: ScrollVideoHeroProps) => {
   const targetRef = useRef<HTMLDivElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
   const currentTimeRef = useRef(0);
